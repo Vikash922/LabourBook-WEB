@@ -12,6 +12,7 @@ import {
 import { useLabor } from '../context/LaborContext';
 import { downloadBatchRosterPdf, downloadWorkerSlipPdf, downloadCashBookReportPdf } from '../utils/pdfGenerator';
 import { getDateKey, getTodayYear, getTodayMonth, getTodayDay } from '../utils/calendar';
+import { getAvatarBgWithOpacity } from '../utils/avatar';
 import { t } from '../utils/strings';
 
 export const BatchPdfHubScreen: React.FC = () => {
@@ -164,8 +165,8 @@ export const BatchPdfHubScreen: React.FC = () => {
               <div key={w.id} className="p-3 flex items-center justify-between hover:bg-slate-50 transition">
                 <div className="flex items-center gap-2.5">
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-                    style={{ backgroundColor: w.avatarColorHex || '#1D61D2' }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-slate-800 text-xs shrink-0"
+                    style={{ backgroundColor: getAvatarBgWithOpacity(w.avatarColorHex, 0.1) }}
                   >
                     {w.name.charAt(0).toUpperCase()}
                   </div>

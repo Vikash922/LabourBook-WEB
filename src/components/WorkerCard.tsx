@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Phone, ChevronRight, MoreHorizontal, Plus } from 'lucide-react';
 import { LaborWorker, AttendanceStatus } from '../types';
 import { calculateMonthStats } from '../utils/stats';
-import { getDateKey, getTodayYear, getTodayMonth, getTodayDay } from '../utils/calendar';
+import { getDateKey, getTodayYear, getTodayMonth, getTodayDay, parseYearMonth } from '../utils/calendar';
+import { getAvatarBgWithOpacity } from '../utils/avatar';
 import { AttendanceSheet } from './AttendanceSheet';
+import { OvertimeModal } from './OvertimeModal';
+import { useLabor } from '../context/LaborContext';
 
 interface WorkerCardProps {
   worker: LaborWorker;
@@ -18,11 +21,14 @@ export const WorkerCard: React.FC<WorkerCardProps> = ({
   onCardClick,
   onQuickAttendance
 }) => {
+  const { updateDayDetails } = useLabor();
   const [showSheet, setShowSheet] = useState(false);
+  const [showOvertimeModal, setShowOvertimeModal] = useState(false);
 
   const stats = calculateMonthStats(worker, selectedMonth);
   const todayDay = getTodayDay();
-  const todayKey = getDateKey(getTodayYear(), getTodayMonth(), todayDay);
+  const { year, month } = parseYearMonth(selectedMonth);
+  const todayKey = getDateKey(year, month, todayDay);
   const todayRecord = worker.attendance[todayKey];
   const todayStatus: AttendanceStatus = todayRecord?.status || 'UNMARKED';
 
@@ -39,8 +45,8 @@ export const WorkerCard: React.FC<WorkerCardProps> = ({
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div 
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-xs"
-              style={{ backgroundColor: worker.avatarColorHex || '#1D61D2' }}
+              className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-slate-800 text-base shrink-0"
+              style={{ backgroundColor: getAvatarBgWithOpacity(worker.avatarColorHex, 0.1) }}
             >
               {worker.name.charAt(0).toUpperCase() || 'W'}
             </div>
@@ -138,7 +144,7 @@ export const WorkerCard: React.FC<WorkerCardProps> = ({
           <button
             type="button"
             onClick={() => setShowSheet(true)}
-            className="px-2 py-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/70 rounded-lg text-xs font-bold transition flex items-center justify-center"
+            className="px-2 py-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/70 rounded-lg text-xs font-bold transition flex items-center justify-center cursor-pointer"
             title="More attendance options"
           >
             <MoreHorizontal className="w-4 h-4" />
@@ -174,11 +180,59 @@ export const WorkerCard: React.FC<WorkerCardProps> = ({
 
       <AttendanceSheet
         isOpen={showSheet}
+        workerName={worker.name}
+        formattedDate={`${selectedMonth.split(' ')[0]} ${String(todayDay).padStart(2, '0')}, ${selectedMonth.split(' ')[1] || '2026'}`}
         dayNumber={todayDay}
         currentStatus={todayStatus}
+        hasOvertime={(todayRecord?.overtimeHours || 0) > 0}
+        overtimeHours={todayRecord?.overtimeHours || 0}
         onSelectStatus={onQuickAttendance}
+        onOpenOvertime={() => {
+          setShowSheet(false);
+          setShowOvertimeModal(true);
+        }}
         onClose={() => setShowSheet(false)}
       />
+
+      {showOvertimeModal && (
+        <OvertimeModal
+          isOpen={true}
+          workerName={worker.name}
+          formattedDate={`${selectedMonth.split(' ')[0]} ${String(todayDay).padStart(2, '0')}, ${selectedMonth.split(' ')[1] || '2026'}`}
+          dayNumber={todayDay}
+          selectedMonth={selectedMonth}
+          defaultHourlyRate={worker.dailyWage > 0 ? worker.dailyWage / 8 : 0}
+          initialHours={todayRecord?.overtimeHours || 0}
+          initialRate={todayRecord?.overtimeRate || 0}
+          onSave={(hours, rate) => {
+            updateDayDetails(
+              worker.id,
+              todayDay,
+              todayRecord?.advanceAmount || 0,
+              todayRecord?.note || '',
+              hours,
+              rate,
+              selectedMonth,
+              todayRecord?.paymentMethod || 'CASH'
+            );
+            setShowOvertimeModal(false);
+          }}
+          onDelete={() => {
+            updateDayDetails(
+              worker.id,
+              todayDay,
+              todayRecord?.advanceAmount || 0,
+              todayRecord?.note || '',
+              0,
+              0,
+              selectedMonth,
+              todayRecord?.paymentMethod || 'CASH'
+            );
+            setShowOvertimeModal(false);
+          }}
+          onClose={() => setShowOvertimeModal(false)}
+        />
+      )}
     </>
   );
 };

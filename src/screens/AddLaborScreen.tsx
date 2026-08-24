@@ -11,7 +11,7 @@ export const AddLaborScreen: React.FC = () => {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [salaryType, setSalaryType] = useState<SalaryType>('Daily');
-  const [wageStr, setWageStr] = useState('600');
+  const [wageStr, setWageStr] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

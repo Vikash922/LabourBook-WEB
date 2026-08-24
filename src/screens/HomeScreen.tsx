@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { Search, UserPlus, Phone } from 'lucide-react';
+import { Search, UserPlus } from 'lucide-react';
 import { useLabor } from '../context/LaborContext';
+import { getAvatarBgWithOpacity, AVATAR_PALETTE } from '../utils/avatar';
 
 export const HomeScreen: React.FC = () => {
   const { 
@@ -70,9 +71,10 @@ export const HomeScreen: React.FC = () => {
           <div className="bg-white rounded-xl border border-slate-100/90 shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden divide-y divide-slate-100">
             {filteredWorkers.map((worker, index) => {
               const initial = (worker.name.trim()[0] || 'L').toUpperCase();
-              
-              // Fallback pastel backgrounds if not set
-              const pastelBg = worker.avatarColorHex || (index % 2 === 0 ? '#FFE7D6' : '#E6FAF2');
+              const avatarBg = getAvatarBgWithOpacity(
+                worker.avatarColorHex || AVATAR_PALETTE[index % AVATAR_PALETTE.length],
+                0.1
+              );
 
               return (
                 <div
@@ -80,10 +82,10 @@ export const HomeScreen: React.FC = () => {
                   onClick={() => navigateTo({ type: 'LABOR_DETAIL', workerId: worker.id })}
                   className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-50/70 active:bg-slate-100/70 cursor-pointer transition select-none"
                 >
-                  {/* Pastel Avatar */}
+                  {/* 10% Opacity Avatar */}
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-slate-800 text-xs shrink-0"
-                    style={{ backgroundColor: pastelBg }}
+                    style={{ backgroundColor: avatarBg }}
                   >
                     {initial}
                   </div>

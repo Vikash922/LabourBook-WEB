@@ -15,138 +15,28 @@ export const INITIAL_PROFILE: UserProfile = {
   authProvider: "Google"
 };
 
-// Seed 3 realistic workers with some recent attendance for demonstration
+// No demo data - user starts fresh with real data
 export function getInitialWorkers(): LaborWorker[] {
-  const currentYear = getTodayYear();
-  const currentMonth = getTodayMonth();
-  const todayDay = getTodayDay();
-
-  const w1Id = "worker-1";
-  const w2Id = "worker-2";
-
-  const makeDateKey = (day: number) => getDateKey(currentYear, currentMonth, day);
-
-  const w1Attendance: Record<string, any> = {};
-  const w2Attendance: Record<string, any> = {};
-
-  for (let d = 1; d <= Math.min(todayDay, 28); d++) {
-    const dKey = makeDateKey(d);
-    if (d % 7 === 0) {
-      // Sunday
-      w1Attendance[dKey] = { fullDate: dKey, dayNumber: d, dayOfWeek: "Sun", status: "UNMARKED", overtimeHours: 0, advanceAmount: 0, note: "", overtimeRate: 0, paymentMethod: "CASH" };
-      w2Attendance[dKey] = { fullDate: dKey, dayNumber: d, dayOfWeek: "Sun", status: "UNMARKED", overtimeHours: 0, advanceAmount: 0, note: "", overtimeRate: 0, paymentMethod: "CASH" };
-    } else {
-      w1Attendance[dKey] = {
-        fullDate: dKey,
-        dayNumber: d,
-        dayOfWeek: "Mon",
-        status: d % 5 === 0 ? "HALF_DAY" : "PRESENT",
-        overtimeHours: d % 4 === 0 ? 2 : 0,
-        advanceAmount: d === 10 ? 500 : 0,
-        note: d === 10 ? "Weekly advance" : "",
-        overtimeRate: 80,
-        paymentMethod: "CASH"
-      };
-
-      w2Attendance[dKey] = {
-        fullDate: dKey,
-        dayNumber: d,
-        dayOfWeek: "Mon",
-        status: d % 6 === 0 ? "ABSENT" : "PRESENT",
-        overtimeHours: d % 3 === 0 ? 1.5 : 0,
-        advanceAmount: d === 5 ? 1000 : 0,
-        note: d === 5 ? "Site advance" : "",
-        overtimeRate: 100,
-        paymentMethod: "ONLINE"
-      };
-    }
-  }
-
-  return [
-    {
-      id: w1Id,
-      name: "Akash",
-      phoneNumber: "7848894498",
-      dailyWage: 650,
-      avatarColorHex: "#FFE7D6", // Peach / light orange
-      createdAt: Date.now() - 30 * 86400000,
-      salaryType: "Daily",
-      attendance: w1Attendance
-    },
-    {
-      id: w2Id,
-      name: "Vikash",
-      phoneNumber: "7848894498",
-      dailyWage: 800,
-      avatarColorHex: "#E6FAF2", // Mint green
-      createdAt: Date.now() - 40 * 86400000,
-      salaryType: "Daily",
-      attendance: w2Attendance
-    }
-  ];
+  return [];
 }
 
 export function getInitialTransactions(): CashTransaction[] {
-  const currentYear = getTodayYear();
-  const currentMonth = getTodayMonth();
-  const makeDateKey = (day: number) => getDateKey(currentYear, currentMonth, day);
-
-  return [
-    {
-      id: "tx-1",
-      dateDisplay: `${makeDateKey(1)}`,
-      fullDate: makeDateKey(1),
-      type: "CASH_IN",
-      amount: 25000,
-      paymentMethod: "ONLINE",
-      notes: "Client Site Advance Payment",
-      timestamp: Date.now() - 15 * 86400000
-    },
-    {
-      id: "tx-2",
-      dateDisplay: `${makeDateKey(5)}`,
-      fullDate: makeDateKey(5),
-      type: "CASH_OUT",
-      amount: 1000,
-      paymentMethod: "ONLINE",
-      notes: "Advance to Suresh Sharma",
-      timestamp: Date.now() - 10 * 86400000
-    },
-    {
-      id: "tx-3",
-      dateDisplay: `${makeDateKey(10)}`,
-      fullDate: makeDateKey(10),
-      type: "CASH_OUT",
-      amount: 500,
-      paymentMethod: "CASH",
-      notes: "Advance to Ramesh Kumar",
-      timestamp: Date.now() - 5 * 86400000
-    },
-    {
-      id: "tx-4",
-      dateDisplay: `${makeDateKey(12)}`,
-      fullDate: makeDateKey(12),
-      type: "CASH_OUT",
-      amount: 3200,
-      paymentMethod: "CASH",
-      notes: "Cement bags & Sand delivery",
-      timestamp: Date.now() - 3 * 86400000
-    }
-  ];
+  return [];
 }
 
 export function loadWorkersFromStorage(): LaborWorker[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_WORKERS);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed: LaborWorker[] = JSON.parse(raw);
+      // Filter out old demo sample workers if present
+      const real = parsed.filter((w) => w.id !== 'worker-1' && w.id !== 'worker-2');
+      return real;
     }
   } catch (e) {
     console.error("Failed to load workers from storage", e);
   }
-  const init = getInitialWorkers();
-  saveWorkersToStorage(init);
-  return init;
+  return [];
 }
 
 export function saveWorkersToStorage(workers: LaborWorker[]): void {
@@ -161,14 +51,15 @@ export function loadTransactionsFromStorage(): CashTransaction[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_TRANSACTIONS);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed: CashTransaction[] = JSON.parse(raw);
+      // Filter out old demo sample transactions
+      const real = parsed.filter((t) => !['tx-1', 'tx-2', 'tx-3', 'tx-4'].includes(t.id));
+      return real;
     }
   } catch (e) {
     console.error("Failed to load transactions from storage", e);
   }
-  const init = getInitialTransactions();
-  saveTransactionsToStorage(init);
-  return init;
+  return [];
 }
 
 export function saveTransactionsToStorage(transactions: CashTransaction[]): void {

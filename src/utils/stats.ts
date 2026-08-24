@@ -11,6 +11,7 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
   let halfDayCount = 0;
   let doubleCount = 0;
   let presentHalfCount = 0;
+  let paidLeaveCount = 0;
   let overtimeHours = 0;
   let totalAdvance = 0;
   let totalOvertimeAmount = 0;
@@ -36,6 +37,9 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
       case "PRESENT_HALF":
         presentHalfCount += 1;
         break;
+      case "PAID_LEAVE":
+        paidLeaveCount += 1;
+        break;
       default:
         break;
     }
@@ -54,12 +58,12 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
   let baseEarnings = 0;
   const isMonthly = (worker.salaryType || "").toLowerCase() === "monthly";
 
+  const effectiveDays = presentCount + (halfDayCount * 0.5) + (doubleCount * 2.0) + (presentHalfCount * 1.5) + (paidLeaveCount * 1.0);
+
   if (isMonthly) {
     const dailyRate = daysInMonth > 0 ? worker.dailyWage / daysInMonth : 0;
-    const effectiveDays = presentCount + (halfDayCount * 0.5) + (doubleCount * 2.0) + (presentHalfCount * 1.5);
     baseEarnings = effectiveDays * dailyRate;
   } else {
-    const effectiveDays = presentCount + (halfDayCount * 0.5) + (doubleCount * 2.0) + (presentHalfCount * 1.5);
     baseEarnings = effectiveDays * worker.dailyWage;
   }
 
@@ -72,6 +76,7 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
     halfDayCount,
     doubleCount,
     presentHalfCount,
+    paidLeaveCount,
     overtimeHours,
     totalAdvance,
     totalOvertimeAmount,

@@ -20,6 +20,10 @@ export const Navbar: React.FC = () => {
   
   const [showMonthModal, setShowMonthModal] = useState(false);
 
+  if (currentScreen.type === 'LABOR_DETAIL') {
+    return null;
+  }
+
   const isHomeScreen = currentScreen.type === 'HOME';
 
   const handleShare = () => {
@@ -37,8 +41,6 @@ export const Navbar: React.FC = () => {
     switch (currentScreen.type) {
       case 'HOME':
         return 'Laborbook';
-      case 'LABOR_DETAIL':
-        return 'Labor Details';
       case 'ADD_LABOR':
         return 'Add Labor';
       case 'CASH_BOOK':
@@ -93,7 +95,7 @@ export const Navbar: React.FC = () => {
                 </h1>
               </div>
 
-              {(currentScreen.type === 'LABOR_DETAIL' || currentScreen.type === 'CASH_BOOK') && (
+              {currentScreen.type === 'CASH_BOOK' && (
                 <button
                   onClick={() => setShowMonthModal(true)}
                   className="flex items-center gap-1 px-2.5 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 transition"

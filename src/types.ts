@@ -4,6 +4,7 @@ export type AttendanceStatus =
   | "HALF_DAY"
   | "DOUBLE"
   | "PRESENT_HALF"
+  | "PAID_LEAVE"
   | "OVERTIME"
   | "UNMARKED";
 
@@ -63,6 +64,7 @@ export interface WorkerMonthStats {
   halfDayCount: number;
   doubleCount: number;
   presentHalfCount: number;
+  paidLeaveCount: number;
   overtimeHours: number;
   totalAdvance: number;
   totalOvertimeAmount: number;

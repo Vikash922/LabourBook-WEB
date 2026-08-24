@@ -21,6 +21,7 @@ import {
   INITIAL_PROFILE
 } from '../utils/storage';
 import { formatCurrentMonth, parseYearMonth, getDateKey, DAYS_SHORT } from '../utils/calendar';
+import { AVATAR_PALETTE } from '../utils/avatar';
 
 interface LaborContextType {
   workers: LaborWorker[];
@@ -67,11 +68,6 @@ interface LaborContextType {
 }
 
 const LaborContext = createContext<LaborContextType | undefined>(undefined);
-
-const AVATAR_COLORS = [
-  "#FFE7D6", "#E6FAF2", "#E8EEFB", "#FEE2E2", "#FEF3C7",
-  "#EDE9FE", "#FCE7F3", "#CCFBF1", "#E0E7FF", "#F3E8FF"
-];
 
 export const LaborProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [workers, setWorkers] = useState<LaborWorker[]>(() => loadWorkersFromStorage());
@@ -230,7 +226,7 @@ export const LaborProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     salaryType: SalaryType
   ): string => {
     const id = `worker-${Date.now()}`;
-    const avatarColorHex = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+    const avatarColorHex = AVATAR_PALETTE[Math.floor(Math.random() * AVATAR_PALETTE.length)];
     const newWorker: LaborWorker = {
       id,
       name: name.trim(),

@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { X, Calendar as CalendarIcon, Check } from 'lucide-react';
-import { MONTHS_SHORT, parseYearMonth, getRollingMonthsList, getTodayYear } from '../utils/calendar';
+import { createPortal } from 'react-dom';
+import { X, Calendar as CalendarIcon, ChevronDown } from 'lucide-react';
+import { MONTHS_SHORT, parseYearMonth, getTodayYear } from '../utils/calendar';
+
+const FULL_MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 interface MonthSelectorModalProps {
   isOpen: boolean;
-  selectedMonth: string;
+  selectedMonth: string; // e.g. "Aug 2026"
   onSelectMonth: (month: string) => void;
   onClose: () => void;
 }
@@ -15,97 +21,132 @@ export const MonthSelectorModal: React.FC<MonthSelectorModalProps> = ({
   onSelectMonth,
   onClose
 }) => {
+  const currentYear = getTodayYear();
+  const parsed = parseYearMonth(selectedMonth);
+  
+  // State for the temporary selections before hitting "Ok"
+  const [tempMonthIdx, setTempMonthIdx] = useState(() => {
+    return (parsed.month >= 1 && parsed.month <= 12) ? parsed.month - 1 : 7;
+  });
+  const [tempYear, setTempYear] = useState<number>(parsed.year || currentYear);
+
+  const [view, setView] = useState<'MAIN' | 'MONTH' | 'YEAR'>('MAIN');
+
   if (!isOpen) return null;
 
-  const currentYear = getTodayYear();
-  const [selectedYear, setSelectedYear] = useState<number>(() => {
-    return parseYearMonth(selectedMonth).year || currentYear;
-  });
-
-  const availableYears = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
-
-  const handleMonthClick = (mShort: string) => {
-    const formatted = `${mShort} ${selectedYear}`;
-    onSelectMonth(formatted);
+  const handleOk = () => {
+    const mShort = MONTHS_SHORT[tempMonthIdx];
+    onSelectMonth(`${mShort} ${tempYear}`);
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 select-none"
+      onClick={onClose}
+      style={{ zIndex: 9999 }}
+    >
       <div 
-        className="w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl transition-all"
+        className="w-full max-w-md bg-white rounded-t-3xl shadow-2xl relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <CalendarIcon className="w-5 h-5" />
+        {view === 'MAIN' && (
+          <div className="p-5 pb-8 sm:pb-6 animate-in slide-in-from-bottom-4 duration-200">
+            <h3 className="font-bold text-slate-900 text-[17px] mb-5">Select Month & Year</h3>
+            
+            <div className="flex items-center gap-3 mb-8">
+              <button
+                type="button"
+                onClick={() => setView('MONTH')}
+                className="flex-1 flex items-center justify-between px-4 py-3 rounded-[14px] border border-slate-300 text-[15px] font-semibold text-slate-800"
+              >
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="w-5 h-5 text-slate-800" />
+                  <span>{FULL_MONTHS[tempMonthIdx]}</span>
+                </div>
+                <ChevronDown className="w-5 h-5 text-slate-800" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setView('YEAR')}
+                className="flex-1 flex items-center justify-between px-4 py-3 rounded-[14px] border border-slate-300 text-[15px] font-semibold text-slate-800"
+              >
+                <span>{tempYear}</span>
+                <ChevronDown className="w-5 h-5 text-slate-800" />
+              </button>
             </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-base">Select Month & Year</h3>
-              <p className="text-xs text-slate-500">Currently: {selectedMonth}</p>
+
+            <button
+              onClick={handleOk}
+              className="w-full py-3.5 bg-[#1862D6] hover:bg-blue-700 active:bg-blue-800 text-white rounded-2xl font-bold text-[15px] transition"
+            >
+              Ok
+            </button>
+          </div>
+        )}
+
+        {view === 'MONTH' && (
+          <div className="p-5 pb-8 sm:pb-6 max-h-[70vh] overflow-y-auto animate-in fade-in duration-200">
+            <h3 className="font-bold text-slate-900 text-lg mb-4">Select month</h3>
+            <div className="flex flex-col">
+              {FULL_MONTHS.map((m, idx) => (
+                <label key={m} className="flex items-center gap-4 py-3.5 cursor-pointer">
+                  <div className="relative flex items-center justify-center w-5 h-5">
+                    <input
+                      type="radio"
+                      name="month"
+                      checked={tempMonthIdx === idx}
+                      onChange={() => {
+                        setTempMonthIdx(idx);
+                        setView('MAIN');
+                      }}
+                      className="peer appearance-none w-5 h-5 rounded-full border-2 border-slate-400 checked:border-[#228751] transition-colors"
+                    />
+                    {tempMonthIdx === idx && (
+                      <div className="absolute w-2.5 h-2.5 bg-[#228751] rounded-full pointer-events-none" />
+                    )}
+                  </div>
+                  <span className="text-[17px] text-slate-800 font-medium">{m}</span>
+                </label>
+              ))}
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        )}
 
-        {/* Year Selector Tabs */}
-        <div className="flex gap-2 my-4 p-1 bg-slate-100 rounded-xl">
-          {availableYears.map((yr) => (
-            <button
-              key={yr}
-              onClick={() => setSelectedYear(yr)}
-              className={`flex-1 py-1.5 text-sm font-semibold rounded-lg transition-all ${
-                selectedYear === yr
-                  ? 'bg-white text-blue-600 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              {yr}
-            </button>
-          ))}
-        </div>
-
-        {/* Month Grid */}
-        <div className="grid grid-cols-3 gap-2.5 my-3">
-          {MONTHS_SHORT.map((mShort, idx) => {
-            const formatted = `${mShort} ${selectedYear}`;
-            const isSelected = selectedMonth === formatted;
-
-            return (
-              <button
-                key={mShort}
-                onClick={() => handleMonthClick(mShort)}
-                className={`py-3 px-2 rounded-xl text-sm font-medium border flex items-center justify-center gap-1.5 transition-all ${
-                  isSelected
-                    ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-md shadow-blue-200'
-                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50 hover:border-blue-200'
-                }`}
-              >
-                {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                {mShort}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 pt-3 border-t border-slate-100 flex gap-2">
-          <button
-            onClick={() => {
-              onSelectMonth("All Months");
-              onClose();
-            }}
-            className="w-full py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
-          >
-            Show All Months
-          </button>
-        </div>
+        {view === 'YEAR' && (
+          <div className="p-5 pb-8 sm:pb-6 max-h-[70vh] overflow-y-auto animate-in fade-in duration-200">
+            <h3 className="font-bold text-slate-900 text-lg mb-4">Select year</h3>
+            <div className="flex flex-col">
+              {[currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2].map((yr) => (
+                <label key={yr} className="flex items-center gap-4 py-3.5 cursor-pointer">
+                  <div className="relative flex items-center justify-center w-5 h-5">
+                    <input
+                      type="radio"
+                      name="year"
+                      checked={tempYear === yr}
+                      onChange={() => {
+                        setTempYear(yr);
+                        setView('MAIN');
+                      }}
+                      className="peer appearance-none w-5 h-5 rounded-full border-2 border-slate-400 checked:border-[#228751] transition-colors"
+                    />
+                    {tempYear === yr && (
+                      <div className="absolute w-2.5 h-2.5 bg-[#228751] rounded-full pointer-events-none" />
+                    )}
+                  </div>
+                  <span className="text-[17px] text-slate-800 font-medium">{yr}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };
+

@@ -4,6 +4,7 @@ import { useLabor } from '../context/LaborContext';
 import { calculateMonthStats } from '../utils/stats';
 import { generateWorkerReportText, downloadWorkerSlipPdf } from '../utils/pdfGenerator';
 import { getMonthDays, parseYearMonth } from '../utils/calendar';
+import { getAvatarBgWithOpacity } from '../utils/avatar';
 import { t } from '../utils/strings';
 
 interface LaborReportScreenProps {
@@ -91,8 +92,8 @@ export const LaborReportScreen: React.FC<LaborReportScreenProps> = ({ workerId }
         <div className="flex items-start justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-2xs"
-              style={{ backgroundColor: worker.avatarColorHex || '#1D61D2' }}
+              className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-slate-800 text-lg shrink-0"
+              style={{ backgroundColor: getAvatarBgWithOpacity(worker.avatarColorHex, 0.1) }}
             >
               {worker.name.charAt(0).toUpperCase()}
             </div>
