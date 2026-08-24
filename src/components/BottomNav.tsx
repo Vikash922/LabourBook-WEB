@@ -1,86 +1,102 @@
 import React from 'react';
-import { Users, Wallet, FileText, Settings, UserPlus } from 'lucide-react';
+import { Users, FileText, Settings } from 'lucide-react';
 import { useLabor } from '../context/LaborContext';
-import { t } from '../utils/strings';
 
 export const BottomNav: React.FC = () => {
-  const { currentScreen, navigateTo, userProfile } = useLabor();
-  const lang = userProfile.language || 'en';
+  const { currentScreen, navigateTo } = useLabor();
 
-  const isTabActive = (tabName: string) => {
-    switch (tabName) {
-      case 'HOME':
-        return currentScreen.type === 'HOME' || currentScreen.type === 'LABOR_DETAIL' || currentScreen.type === 'LABOR_REPORT';
-      case 'CASH_BOOK':
-        return currentScreen.type === 'CASH_BOOK' || currentScreen.type === 'CASH_BOOK_REPORT';
-      case 'REPORTS':
-        return currentScreen.type === 'BATCH_PDF_HUB';
-      case 'SETTINGS':
-        return currentScreen.type === 'SETTINGS';
-      default:
-        return false;
-    }
-  };
+  const isLaborActive =
+    currentScreen.type === 'HOME' ||
+    currentScreen.type === 'LABOR_DETAIL' ||
+    currentScreen.type === 'ADD_LABOR' ||
+    currentScreen.type === 'LABOR_REPORT' ||
+    currentScreen.type === 'BATCH_PDF_HUB';
+
+  const isCashBookActive =
+    currentScreen.type === 'CASH_BOOK' ||
+    currentScreen.type === 'CASH_BOOK_REPORT';
+
+  const isSettingsActive = currentScreen.type === 'SETTINGS';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-lg">
-      <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-around">
-        {/* Tab 1: Staff / Attendance */}
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200/90 shadow-sm">
+      <div className="max-w-md md:max-w-xl mx-auto h-16 flex items-stretch justify-around">
+        {/* Tab 1: Labor */}
         <button
           onClick={() => navigateTo({ type: 'HOME' })}
-          className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-            isTabActive('HOME') ? 'text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
+          className="relative flex-1 flex flex-col items-center justify-center pt-1 transition-colors"
         >
-          <Users className={`w-5 h-5 mb-0.5 ${isTabActive('HOME') ? 'stroke-[2.5]' : 'stroke-2'}`} />
-          <span className="text-[11px] leading-none">{t('total_staff', lang)}</span>
+          {isLaborActive && (
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-[3px] bg-[#1862D6] rounded-b-full" />
+          )}
+          <Users
+            className={`w-5 h-5 mb-1 ${
+              isLaborActive ? 'text-[#1862D6] stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'
+            }`}
+          />
+          <span
+            className={`text-xs ${
+              isLaborActive ? 'text-[#1862D6] font-bold' : 'text-slate-600 font-medium'
+            }`}
+          >
+            Labor
+          </span>
         </button>
 
-        {/* Tab 2: Cash Book */}
+        {/* Tab 2: Cash book */}
         <button
           onClick={() => navigateTo({ type: 'CASH_BOOK' })}
-          className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-            isTabActive('CASH_BOOK') ? 'text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
+          className="relative flex-1 flex flex-col items-center justify-center pt-1 transition-colors"
         >
-          <Wallet className={`w-5 h-5 mb-0.5 ${isTabActive('CASH_BOOK') ? 'stroke-[2.5]' : 'stroke-2'}`} />
-          <span className="text-[11px] leading-none">{t('cash_book', lang)}</span>
-        </button>
-
-        {/* Center Quick Action: Add Staff */}
-        <button
-          onClick={() => navigateTo({ type: 'ADD_LABOR' })}
-          className="flex flex-col items-center justify-center -mt-5 mx-1"
-          title="Add Staff"
-        >
-          <div className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 transition-all">
-            <UserPlus className="w-5 h-5" />
+          {isCashBookActive && (
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-[3px] bg-[#1862D6] rounded-b-full" />
+          )}
+          <div className="relative mb-1">
+            <FileText
+              className={`w-5 h-5 ${
+                isCashBookActive ? 'text-[#1862D6] stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'
+              }`}
+            />
+            <span
+              className={`absolute inset-0 flex items-center justify-center text-[9px] font-black leading-none ${
+                isCashBookActive ? 'text-[#1862D6]' : 'text-slate-500'
+              }`}
+            >
+              ₹
+            </span>
           </div>
-          <span className="text-[10px] font-bold text-blue-600 mt-0.5">Add</span>
+          <span
+            className={`text-xs ${
+              isCashBookActive ? 'text-[#1862D6] font-bold' : 'text-slate-600 font-medium'
+            }`}
+          >
+            Cash book
+          </span>
         </button>
 
-        {/* Tab 3: Reports */}
-        <button
-          onClick={() => navigateTo({ type: 'BATCH_PDF_HUB' })}
-          className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-            isTabActive('REPORTS') ? 'text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <FileText className={`w-5 h-5 mb-0.5 ${isTabActive('REPORTS') ? 'stroke-[2.5]' : 'stroke-2'}`} />
-          <span className="text-[11px] leading-none">{t('pdf_reports', lang)}</span>
-        </button>
-
-        {/* Tab 4: Settings */}
+        {/* Tab 3: Settings */}
         <button
           onClick={() => navigateTo({ type: 'SETTINGS' })}
-          className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-            isTabActive('SETTINGS') ? 'text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
+          className="relative flex-1 flex flex-col items-center justify-center pt-1 transition-colors"
         >
-          <Settings className={`w-5 h-5 mb-0.5 ${isTabActive('SETTINGS') ? 'stroke-[2.5]' : 'stroke-2'}`} />
-          <span className="text-[11px] leading-none">{t('settings', lang)}</span>
+          {isSettingsActive && (
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-[3px] bg-[#1862D6] rounded-b-full" />
+          )}
+          <Settings
+            className={`w-5 h-5 mb-1 ${
+              isSettingsActive ? 'text-[#1862D6] stroke-[2.4]' : 'text-slate-500 stroke-[1.8]'
+            }`}
+          />
+          <span
+            className={`text-xs ${
+              isSettingsActive ? 'text-[#1862D6] font-bold' : 'text-slate-600 font-medium'
+            }`}
+          >
+            Settings
+          </span>
         </button>
       </div>
-    </div>
+    </nav>
   );
 };
+

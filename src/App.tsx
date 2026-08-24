@@ -39,7 +39,7 @@ const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans flex flex-col selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#F8F9FB] text-slate-900 font-sans flex flex-col selection:bg-blue-500 selection:text-white">
       {/* Top Navbar */}
       <Navbar />
 

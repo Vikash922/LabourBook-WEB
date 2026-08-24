@@ -69,8 +69,8 @@ interface LaborContextType {
 const LaborContext = createContext<LaborContextType | undefined>(undefined);
 
 const AVATAR_COLORS = [
-  "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6",
-  "#EC4899", "#06B6D4", "#6366F1", "#14B8A6", "#F97316"
+  "#FFE7D6", "#E6FAF2", "#E8EEFB", "#FEE2E2", "#FEF3C7",
+  "#EDE9FE", "#FCE7F3", "#CCFBF1", "#E0E7FF", "#F3E8FF"
 ];
 
 export const LaborProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

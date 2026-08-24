@@ -23,13 +23,11 @@ export function getInitialWorkers(): LaborWorker[] {
 
   const w1Id = "worker-1";
   const w2Id = "worker-2";
-  const w3Id = "worker-3";
 
   const makeDateKey = (day: number) => getDateKey(currentYear, currentMonth, day);
 
   const w1Attendance: Record<string, any> = {};
   const w2Attendance: Record<string, any> = {};
-  const w3Attendance: Record<string, any> = {};
 
   for (let d = 1; d <= Math.min(todayDay, 28); d++) {
     const dKey = makeDateKey(d);
@@ -37,7 +35,6 @@ export function getInitialWorkers(): LaborWorker[] {
       // Sunday
       w1Attendance[dKey] = { fullDate: dKey, dayNumber: d, dayOfWeek: "Sun", status: "UNMARKED", overtimeHours: 0, advanceAmount: 0, note: "", overtimeRate: 0, paymentMethod: "CASH" };
       w2Attendance[dKey] = { fullDate: dKey, dayNumber: d, dayOfWeek: "Sun", status: "UNMARKED", overtimeHours: 0, advanceAmount: 0, note: "", overtimeRate: 0, paymentMethod: "CASH" };
-      w3Attendance[dKey] = { fullDate: dKey, dayNumber: d, dayOfWeek: "Sun", status: "UNMARKED", overtimeHours: 0, advanceAmount: 0, note: "", overtimeRate: 0, paymentMethod: "CASH" };
     } else {
       w1Attendance[dKey] = {
         fullDate: dKey,
@@ -58,21 +55,9 @@ export function getInitialWorkers(): LaborWorker[] {
         status: d % 6 === 0 ? "ABSENT" : "PRESENT",
         overtimeHours: d % 3 === 0 ? 1.5 : 0,
         advanceAmount: d === 5 ? 1000 : 0,
-        note: d === 5 ? "Medical advance" : "",
+        note: d === 5 ? "Site advance" : "",
         overtimeRate: 100,
         paymentMethod: "ONLINE"
-      };
-
-      w3Attendance[dKey] = {
-        fullDate: dKey,
-        dayNumber: d,
-        dayOfWeek: "Mon",
-        status: "PRESENT",
-        overtimeHours: 0,
-        advanceAmount: 0,
-        note: "",
-        overtimeRate: 60,
-        paymentMethod: "CASH"
       };
     }
   }
@@ -80,33 +65,23 @@ export function getInitialWorkers(): LaborWorker[] {
   return [
     {
       id: w1Id,
-      name: "Ramesh Kumar (Mason)",
-      phoneNumber: "9876543211",
+      name: "Akash",
+      phoneNumber: "7848894498",
       dailyWage: 650,
-      avatarColorHex: "#3B82F6",
+      avatarColorHex: "#FFE7D6", // Peach / light orange
       createdAt: Date.now() - 30 * 86400000,
       salaryType: "Daily",
       attendance: w1Attendance
     },
     {
       id: w2Id,
-      name: "Suresh Sharma (Carpenter)",
-      phoneNumber: "9876543212",
+      name: "Vikash",
+      phoneNumber: "7848894498",
       dailyWage: 800,
-      avatarColorHex: "#10B981",
+      avatarColorHex: "#E6FAF2", // Mint green
       createdAt: Date.now() - 40 * 86400000,
       salaryType: "Daily",
       attendance: w2Attendance
-    },
-    {
-      id: w3Id,
-      name: "Vikash Singh (Helper)",
-      phoneNumber: "9876543213",
-      dailyWage: 15000,
-      avatarColorHex: "#F59E0B",
-      createdAt: Date.now() - 60 * 86400000,
-      salaryType: "Monthly",
-      attendance: w3Attendance
     }
   ];
 }
