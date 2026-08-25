@@ -23,22 +23,27 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
 
     switch (record.status) {
       case "PRESENT":
-        presentCount += 1;
+      case "OVERTIME":
+        presentCount += 1.0;
         break;
       case "ABSENT":
-        absentCount += 1;
+        absentCount += 1.0;
         break;
       case "HALF_DAY":
-        halfDayCount += 1;
+        presentCount += 0.5;
+        halfDayCount += 1.0;
         break;
       case "DOUBLE":
-        doubleCount += 1;
+        presentCount += 2.0;
+        doubleCount += 1.0;
         break;
       case "PRESENT_HALF":
-        presentHalfCount += 1;
+        presentCount += 1.5;
+        presentHalfCount += 1.0;
         break;
       case "PAID_LEAVE":
-        paidLeaveCount += 1;
+        presentCount += 1.0;
+        paidLeaveCount += 1.0;
         break;
       default:
         break;
@@ -46,7 +51,7 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
 
     if (record.overtimeHours > 0) {
       overtimeHours += record.overtimeHours;
-      const rate = record.overtimeRate > 0 ? record.overtimeRate : defaultHourlyRate;
+      const rate = record.overtimeRate || 0;
       totalOvertimeAmount += record.overtimeHours * rate;
     }
 
@@ -58,13 +63,14 @@ export function calculateMonthStats(worker: LaborWorker, monthStr: string): Work
   let baseEarnings = 0;
   const isMonthly = (worker.salaryType || "").toLowerCase() === "monthly";
 
-  const effectiveDays = presentCount + (halfDayCount * 0.5) + (doubleCount * 2.0) + (presentHalfCount * 1.5) + (paidLeaveCount * 1.0);
-
   if (isMonthly) {
-    const dailyRate = daysInMonth > 0 ? worker.dailyWage / daysInMonth : 0;
-    baseEarnings = effectiveDays * dailyRate;
+    if (daysInMonth > 0) {
+      baseEarnings = (presentCount / daysInMonth) * worker.dailyWage;
+    } else {
+      baseEarnings = (presentCount / 30.0) * worker.dailyWage;
+    }
   } else {
-    baseEarnings = effectiveDays * worker.dailyWage;
+    baseEarnings = presentCount * worker.dailyWage;
   }
 
   const grossWage = baseEarnings + totalOvertimeAmount;

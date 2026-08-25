@@ -58,7 +58,7 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
   const isSelected = (status: AttendanceStatus) => tempStatus === status;
 
   const getButtonClass = (status: AttendanceStatus) => {
-    return `h-9 px-4 min-w-[44px] rounded-full font-medium text-[14px] flex items-center justify-center cursor-pointer transition ${
+    return `h-8 px-3 min-w-[40px] rounded-full font-medium text-[13px] flex items-center justify-center cursor-pointer transition ${
       isSelected(status)
         ? 'bg-[#1862D6] text-white border border-[#1862D6]'
         : 'bg-white text-slate-800 border border-slate-200 hover:bg-slate-50'
@@ -79,24 +79,24 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
           <X className="w-5 h-5" />
         </button>
         <div 
-          className="w-full bg-white rounded-t-3xl pt-6 pb-6 shadow-2xl relative overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-200"
+          className="w-full bg-white rounded-t-3xl pt-4 pb-4 shadow-2xl relative overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="px-5">
+          <div className="px-4">
             <div className="flex items-center justify-between pb-1">
-              <h2 className="text-[20px] font-bold text-slate-900 tracking-tight pr-2">
+              <h2 className="text-[18px] font-bold text-slate-900 tracking-tight pr-2">
                 {workerName}
               </h2>
-              <span className="text-[13px] text-slate-900 font-bold">
+              <span className="text-[12px] text-slate-900 font-bold">
                 {formattedDate}
               </span>
             </div>
             
-            <div className="text-[12px] text-slate-600 font-medium mb-5">
+            <div className="text-[11px] text-slate-600 font-medium mb-3">
               Mark Attendance
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 mb-6">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
               <button type="button" onClick={() => setTempStatus('ABSENT')} className={getButtonClass('ABSENT')}>
                 A
               </button>
@@ -117,7 +117,7 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
                 onClick={() => {
                   if (onOpenOvertime) onOpenOvertime();
                 }}
-                className={`h-9 px-4 rounded-full font-medium text-[14px] flex items-center justify-center cursor-pointer transition ${
+                className={`h-8 px-3 min-w-[40px] rounded-full font-medium text-[13px] flex items-center justify-center cursor-pointer transition ${
                   hasOvertime
                     ? 'bg-purple-600 text-white border border-purple-600'
                     : 'bg-white text-purple-700 border border-purple-300 hover:bg-purple-50'
@@ -131,9 +131,9 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
             </div>
           </div>
 
-          <div className="px-5 border-t border-slate-100 pt-5">
-            <p className="text-[12px] text-slate-800 mb-2.5 tracking-wide uppercase font-medium">Meaning:</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-slate-700">
+          <div className="px-4 border-t border-slate-100 pt-3">
+            <p className="text-[11px] text-slate-800 mb-1.5 tracking-wide uppercase font-medium">Meaning:</p>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-700">
               <div><span className="font-bold text-slate-900">A</span> - Absent</div>
               <div><span className="font-bold text-slate-900">1/2</span> - Half day</div>
               <div><span className="font-bold text-slate-900">P</span> - Present</div>
@@ -144,11 +144,11 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 px-5 pt-8 mt-1">
+          <div className="flex items-center gap-2 px-4 pt-4 mt-1">
             <button
               type="button"
               onClick={handleRemove}
-              className="flex-1 py-3 bg-white hover:bg-slate-50 border border-[#1862D6] text-[#1862D6] font-medium text-[15px] rounded-full text-center cursor-pointer transition"
+              className="flex-1 py-2.5 bg-white hover:bg-slate-50 border border-[#1862D6] text-[#1862D6] font-medium text-[14px] rounded-full text-center cursor-pointer transition"
             >
               Remove Marked
             </button>
@@ -156,7 +156,7 @@ export const AttendanceSheet: React.FC<AttendanceSheetProps> = ({
             <button
               type="button"
               onClick={handleOk}
-              className="flex-1 py-3 bg-[#1862D6] hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-[15px] rounded-full text-center cursor-pointer transition"
+              className="flex-1 py-2.5 bg-[#1862D6] hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-[14px] rounded-full text-center cursor-pointer transition"
             >
               Ok
             </button>

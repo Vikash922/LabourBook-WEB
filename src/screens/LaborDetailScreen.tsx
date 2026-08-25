@@ -441,10 +441,10 @@ export const LaborDetailScreen: React.FC<LaborDetailScreenProps> = ({ workerId }
                   <button
                     type="button"
                     onClick={() => setSheetDay(day.dayNumber)}
-                    className="w-7 h-7 flex items-center justify-center text-slate-800 hover:bg-slate-100 rounded-md transition cursor-pointer shrink-0 ml-auto"
+                    className="w-5 h-5 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded transition cursor-pointer shrink-0 ml-auto"
                     title="More Attendance Options"
                   >
-                    <MoreVertical className="w-5 h-5 stroke-[2.5]" />
+                    <MoreVertical className="w-3.5 h-3.5 stroke-[2.5]" />
                   </button>
                 </div>
 
@@ -456,7 +456,7 @@ export const LaborDetailScreen: React.FC<LaborDetailScreenProps> = ({ workerId }
                       setAdvanceDay(day.dayNumber);
                     }
                   }}
-                  className="flex items-center justify-between pl-3 pr-2 py-2 cursor-pointer hover:bg-slate-100/60 transition"
+                  className="flex items-center justify-between pl-1 pr-2 py-1.5 cursor-pointer hover:bg-slate-100/60 transition"
                 >
                   <div className="flex items-center gap-1 min-w-0 truncate">
                     {hasAdvance ? (
@@ -464,16 +464,16 @@ export const LaborDetailScreen: React.FC<LaborDetailScreenProps> = ({ workerId }
                         ₹ {record.advanceAmount}
                       </span>
                     ) : hasNote ? (
-                      <span className="text-xs font-medium text-red-500 truncate max-w-[80px]">
+                      <span className="text-[11px] font-medium text-slate-500 truncate max-w-[70px]">
                         {record.note}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium text-slate-400">
-                        ₹
+                      <span className="text-[11px] font-medium text-slate-400">
+                        ₹ Note
                       </span>
                     )}
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 </div>
               </div>
             );

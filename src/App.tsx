@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LaborProvider, useLabor } from './context/LaborContext';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
@@ -11,9 +11,15 @@ import { LaborReportScreen } from './screens/LaborReportScreen';
 import { BatchPdfHubScreen } from './screens/BatchPdfHubScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { AdvanceConfirmation } from './components/AdvanceConfirmation';
+import { AuthScreen } from './screens/AuthScreen';
 
 const MainContent: React.FC = () => {
   const { currentScreen, toastMessage, advanceConfirmation, clearAdvanceConfirmation } = useLabor();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  if (!isAuthenticated) {
+    return <AuthScreen onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   const renderScreen = () => {
     switch (currentScreen.type) {

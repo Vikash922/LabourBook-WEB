@@ -64,16 +64,16 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
       style={{ zIndex: 9999 }}
     >
       <div 
-        className="w-full max-w-md bg-white rounded-t-3xl pt-6 px-6 pb-6 shadow-2xl relative overflow-hidden animate-in slide-in-from-bottom-4 duration-200 flex flex-col justify-between"
+        className="w-full max-w-md bg-white rounded-t-3xl pt-4 px-4 pb-4 shadow-2xl relative overflow-hidden animate-in slide-in-from-bottom-4 duration-200 flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-6">
-          <h2 className="text-[20px] font-bold text-slate-900 tracking-tight">
+        <div className="mb-4">
+          <h2 className="text-[18px] font-bold text-slate-900 tracking-tight">
             Add/Edit Advance Or Note
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mb-5">
+        <form onSubmit={handleSubmit} className="space-y-3 mb-4">
           <input
             type="number"
             step="any"
@@ -82,7 +82,7 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
             value={amountStr}
             onChange={(e) => setAmountStr(e.target.value)}
             placeholder="₹ Amount"
-            className="w-full h-12 px-4 bg-white border border-slate-300 rounded-[12px] text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1862D6] transition-colors"
+            className="w-full h-10 px-3 bg-white border border-slate-300 rounded-[10px] text-[14px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1862D6] transition-colors"
           />
 
           <input
@@ -90,18 +90,18 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Note (Optional)"
-            className="w-full h-12 px-4 bg-white border border-slate-300 rounded-[12px] text-[15px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1862D6] transition-colors"
+            className="w-full h-10 px-3 bg-white border border-slate-300 rounded-[10px] text-[14px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1862D6] transition-colors"
           />
 
           <div>
-            <label className="block text-[15px] text-slate-700 font-medium mb-2 mt-2">
+            <label className="block text-[14px] text-slate-700 font-medium mb-1 mt-1">
               Payment Method
             </label>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('CASH')}
-                className={`flex-1 py-3 rounded-[12px] font-medium text-[15px] flex items-center justify-center transition ${
+                className={`flex-1 py-2.5 rounded-[10px] font-medium text-[14px] flex items-center justify-center transition ${
                   paymentMethod === 'CASH'
                     ? 'bg-[#E8F0FE] text-[#1862D6] border border-[#d2e3fc]'
                     : 'bg-white text-slate-600 border border-slate-300'
@@ -112,7 +112,7 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
               <button
                 type="button"
                 onClick={() => setPaymentMethod('ONLINE')}
-                className={`flex-1 py-3 rounded-[12px] font-medium text-[15px] flex items-center justify-center transition ${
+                className={`flex-1 py-2.5 rounded-[10px] font-medium text-[14px] flex items-center justify-center transition ${
                   paymentMethod === 'ONLINE'
                     ? 'bg-[#E8F0FE] text-[#1862D6] border border-[#d2e3fc]'
                     : 'bg-white text-slate-600 border border-slate-300'
@@ -124,20 +124,20 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
           </div>
         </form>
 
-        <div className="mb-6">
-          <p className="text-[13px] leading-relaxed text-slate-500">
+        <div className="mb-4">
+          <p className="text-[12px] leading-relaxed text-slate-500">
             Total advance will be adjusted in final salary calculation.
           </p>
         </div>
 
-        <div className="flex items-center gap-4 mt-2">
+        <div className="flex items-center gap-3 mt-1">
           <button
             type="button"
             onClick={() => {
               onDelete();
               onClose();
             }}
-            className="flex-1 py-3.5 px-4 border border-[#D32F2F] text-[#D32F2F] font-medium text-[15px] rounded-full text-center cursor-pointer"
+            className="flex-1 py-3 px-4 border border-[#D32F2F] text-[#D32F2F] font-medium text-[14px] rounded-full text-center cursor-pointer"
           >
             Remove Marked
           </button>
@@ -145,7 +145,7 @@ export const AdvanceModal: React.FC<AdvanceModalProps> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            className="flex-1 py-3.5 px-4 bg-[#1862D6] hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-[15px] rounded-full text-center transition cursor-pointer"
+            className="flex-1 py-3 px-4 bg-[#1862D6] hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-[14px] rounded-full text-center transition cursor-pointer"
           >
             Ok
           </button>
